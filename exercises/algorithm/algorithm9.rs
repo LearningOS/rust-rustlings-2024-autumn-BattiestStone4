@@ -38,6 +38,31 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        if self.items.is_empty() {
+            self.items.push(value);
+            return;
+        }
+        self.items.push(value);
+        let mut idx = self.items.len() - 1;
+        let mut parent_idx = self.parent_idx(idx);
+        while idx >= parent_idx {
+            let mut parent_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+                let mut_ptr = self.items.as_mut_ptr();
+                unsafe {
+                    std::ptr::swap(
+                        mut_ptr.offset(idx as isize),
+                        mut_ptr.offset(parent_idx as isize),
+                                                                                            
+                    );
+                                    
+                }
+                idx = parent_idx;
+            }
+            else {
+                return;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -52,7 +77,7 @@ where
         idx * 2
     }
 
-    fn right_child_idx(&self, idx: usize) -> usize {
+    fe right_child_idx(&self, idx: usize) -> usize {
         self.left_child_idx(idx) + 1
     }
 
@@ -85,7 +110,7 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        self.remove()
     }
 }
 
